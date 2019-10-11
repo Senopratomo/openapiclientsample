@@ -3,7 +3,7 @@
 <h3>Prerequisite</h3>
 <p>
     <ul>
-        <li>Java installed in the loca (note: I use JAVA 12 in this sample, but if you have different JAVA version locally, change the "properties" tag in pom.xml
+        <li>Java installed in the loca (note: I use JAVA 11 in this sample, but if you have different JAVA version locally, change the "properties" tag in pom.xml
         <li>Maven installed in local</li>
     </ul>    
 </p>
