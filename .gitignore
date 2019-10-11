@@ -1,0 +1,15 @@
+# IDE
+.idea
+
+*~
+*#
+.DS_STORE
+.netbeans
+nbproject
+.idea
+
+**/target/*
+*.iml
+/target/**
+/out/*
+target
