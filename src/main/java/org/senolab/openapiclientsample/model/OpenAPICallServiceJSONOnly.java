@@ -12,7 +12,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.senolab.openapiclientsample.edgercutil.Edgerc;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.nio.file.Files;
@@ -20,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-public class OpenAPICallService {
+public class OpenAPICallServiceJSONOnly {
     private final int MAX_BODY = 131072;
     private String[] apiClientInfo;
     private long start = System.currentTimeMillis(),
@@ -30,10 +33,9 @@ public class OpenAPICallService {
     private HttpRequest request;
     private HttpResponse response;
 
-    public OpenAPICallService(String edgerc, String httpMethod, String httpPath) throws IOException {
-        System.out.println("Reading your token credentials from "+edgerc+" ....");
+    public OpenAPICallServiceJSONOnly(String edgerc, String httpMethod, String httpPath) throws IOException {
         apiClientInfo = Edgerc.extractTokens(edgerc);
-        System.out.println("Extracting tokens information....");
+
         //Build the URL based on the path specified and the host from edgerc file
         uriPath = buildURIPath(apiClientInfo[0], httpPath);
 
@@ -48,15 +50,12 @@ public class OpenAPICallService {
         HttpHeaders headers = request.getHeaders();
         headers.set("Host", apiClientInfo[1]);
         //Getting Akamai IP for verbose debugging purpose
-        System.out.println("Resolving hostname....");
         InetAddress address = InetAddress.getByName(apiClientInfo[1]);
-        System.out.println("Akamai IP: "+address.getHostAddress());
     }
 
-    public OpenAPICallService(String edgerc, String httpMethod, String httpPath, String headerFile) throws IOException, ParseException {
-        System.out.println("Reading your token credentials from "+edgerc+" ....");
+    public OpenAPICallServiceJSONOnly(String edgerc, String httpMethod, String httpPath, String headerFile) throws IOException, ParseException {
         apiClientInfo = Edgerc.extractTokens(edgerc);
-        System.out.println("Extracting tokens information....");
+
         //Build the URL based on the path specified and the host from edgerc file
         uriPath = buildURIPath(apiClientInfo[0], httpPath);
 
@@ -72,15 +71,12 @@ public class OpenAPICallService {
         //Setting Host header
         headers.set("Host", apiClientInfo[1]);
         //Getting Akamai IP for verbose debugging purpose
-        System.out.println("Resolving hostname....");
+
         InetAddress address = InetAddress.getByName(apiClientInfo[1]);
-        System.out.println("Akamai IP: "+address.getHostAddress());
     }
 
-    public OpenAPICallService(String edgerc, String httpMethod, String httpPath, String headerFile, String jsonBodyFile) throws IOException, ParseException {
-        System.out.println("Reading your token credentials from "+edgerc+" ....");
+    public OpenAPICallServiceJSONOnly(String edgerc, String httpMethod, String httpPath, String headerFile, String jsonBodyFile) throws IOException, ParseException {
         apiClientInfo = Edgerc.extractTokens(edgerc);
-        System.out.println("Extracting tokens information....");
         //Build the URL based on the path specified and the host from edgerc file
         uriPath = buildURIPath(apiClientInfo[0], httpPath);
 
@@ -96,9 +92,7 @@ public class OpenAPICallService {
         //Setting Host header
         headers.set("Host", apiClientInfo[1]);
         //Getting Akamai IP for verbose debugging purpose
-        System.out.println("Resolving hostname....");
         InetAddress address = InetAddress.getByName(apiClientInfo[1]);
-        System.out.println("Akamai IP: "+address.getHostAddress());
 
     }
 
@@ -106,28 +100,19 @@ public class OpenAPICallService {
         //Sign request and execute
         GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
         requestSigner.sign(request);
-        System.out.println("HTTP Request headers: \n"+request.getHeaders());
-        start = System.currentTimeMillis();
-        System.out.println("Executing the HTTP request...");
         response = request.execute();
 
         //Print HTTP response code + response headers
-        System.out.println("HTTP Response code: "+response.getStatusCode());
-        System.out.println("HTTP Response headers: \n"+response.getHeaders());
         //Extract the HTTP Response code and response
         if(response.getContent() != null) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getContent(), "UTF-8"));
             String json = reader.readLine();
-            System.out.println("HTTP Response Body: ");
             while (json != null) {
                 System.out.println(json+"\n");
                 json = reader.readLine();
             }
             reader.close();
         }
-
-        end = System.currentTimeMillis();
-        System.out.println("Time taken: "+(end-start)+" milis");
     }
 
 
@@ -148,7 +133,6 @@ public class OpenAPICallService {
     }
 
     private HttpRequest buildHttpRequest(String method, String urlPath) throws IOException {
-        System.out.println("Building API call....");
         HttpRequestFactory requestFactory = createSigningRequestFactory();
         URI uri = URI.create(urlPath);
         HttpRequest request = null;
@@ -183,7 +167,6 @@ public class OpenAPICallService {
         String requestBody = null;
         JSONParser parser = new JSONParser();
         if (isThereBody && !isXML) {
-            System.out.println("Reading input file for JSON body from "+jsonBodyFile+" ....");
             Object obj = parser.parse(new FileReader(jsonBodyFile));
             if(obj instanceof JSONObject) {
                 JSONObject jsonObject = (JSONObject) obj;
@@ -193,19 +176,12 @@ public class OpenAPICallService {
                 JSONArray jsonArray = (JSONArray) obj;
                 requestBody = jsonArray.toJSONString();
             }
-            System.out.println("JSON body: ");
-            System.out.println(requestBody);
         } else if(isThereBody && isXML) {
-            System.out.println("Reading input file for non-JSON body from "+jsonBodyFile+" ....");
             Path path = Paths.get(jsonBodyFile);
             requestBody = Files.lines(path).collect(Collectors.joining());
-            System.out.println("Request body: ");
-            System.out.println(requestBody);
         } else {
-            System.out.println("No request Body for this call...");
         }
 
-        System.out.println("Building API call....");
         HttpRequestFactory requestFactory = createSigningRequestFactory();
         URI uri = URI.create(urlPath);
         HttpRequest request = null;
@@ -234,13 +210,10 @@ public class OpenAPICallService {
 
     private HttpHeaders setHttpHeaders(String headersInputFile) throws IOException, ParseException {
         //Parse header input file to be added to the HTTP request
-        System.out.println("Reading additional header data from "+headersInputFile+" ....");
         JSONParser parser = new JSONParser();
         Object headerObj = parser.parse(new FileReader(headersInputFile));
         JSONObject headerJsonObject = (JSONObject) headerObj;
         String headersAdded = headerJsonObject.toJSONString();
-        System.out.println("Additional headers to be added: ");
-        System.out.println(headersAdded);
 
         HttpHeaders headers = request.getHeaders();
         for (Object key : headerJsonObject.keySet()) {
