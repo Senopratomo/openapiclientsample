@@ -202,7 +202,7 @@ public class OpenAPICallServiceJSONOnly {
     private HttpRequestFactory createSigningRequestFactory() {
         HttpTransport httpTransport = new ApacheHttpTransport();
         return httpTransport.createRequestFactory(new HttpRequestInitializer() {
-            public void initialize(HttpRequest request) throws IOException {
+            public void initialize(HttpRequest request) {
                 request.setInterceptor(new GoogleHttpClientEdgeGridInterceptor(credential));
             }
         });
@@ -226,6 +226,9 @@ public class OpenAPICallServiceJSONOnly {
                     break;
                 case "if-match":
                     headers.setIfMatch((String) headerJsonObject.get(key));
+                    break;
+                case "accept-encoding":
+                    headers.setAcceptEncoding((String) headerJsonObject.get(key));
                     break;
                 default:
                     headers.set((String) key, (String) headerJsonObject.get(key));

@@ -22,19 +22,15 @@ public class App {
                 OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3], args[4]);
                 apiCallService.execute();
             } else if (args.length == 6) {
-                try {
-                    if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
-                        OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2]);
-                        apiCallService.execute();
-                    } else if (args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
-                        OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3]);
-                        apiCallService.execute();
-                    } else if (args[4].equalsIgnoreCase("json-only")) {
-                        OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3], args[4]);
-                        apiCallService.execute();
-                    }
-                } catch (HttpResponseException hre) {
-                    System.out.println(hre.getContent());
+                if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
+                    OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2]);
+                    apiCallService.execute();
+                } else if (args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
+                    OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3]);
+                    apiCallService.execute();
+                } else if (args[4].equalsIgnoreCase("json-only")) {
+                    OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3], args[4]);
+                    apiCallService.execute();
                 }
 
             } else {
@@ -64,7 +60,7 @@ public class App {
                         + "$java -jar OpenAPIClient.jar /home/user1/.edgerc GET \"/diagnostic-tools/v2/ghost-locations/available\" \n"
                         + "\n"
                         + "Scenario #2: API call to perform Fast invalidate by URL in Production - https://developer.akamai.com/api/purge/ccu/resources.html#postinvalidateurl \n"
-                        + "$java -jar OpenAPIClient.jar /home/user1/mytokens.txt POST \"/ccu/v3/invalidate/url/production\" /home/user1/body.json /home/user1/headers.json  \n"
+                        + "$java -jar OpenAPIClient.jar /home/user1/mytokens.txt POST \"/ccu/v3/invalidate/url/production\" /home/user1/headers.json /home/user1/body.json  \n"
                         + "any feedback or issue, feel free to email esenopra@akamai.com with subject \"OpenCLIClient - Feedback\" \n"
                         + " ");
             }
