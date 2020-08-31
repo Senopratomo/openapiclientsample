@@ -68,7 +68,6 @@ public class App {
             System.out.println("HTTP Response code: "+hre.getStatusCode());
             System.out.println("HTTP Response headers: \n"+hre.getHeaders());
             System.out.println("HTTP Response body: \n"+hre.getContent());
-            System.out.println(hre.getContent());
         } catch (ParseException e) {
             System.out.println("Unable to parse the file containing the additional headers and/or the file containing the JSON body");
             e.printStackTrace();

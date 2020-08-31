@@ -47,7 +47,7 @@ $java -jar OpenAPIClient.jar /home/user1/.edgerc GET "/diagnostic-tools/v2/ghost
 <br>
 <br>    
 Scenario #2: API call to perform Fast invalidate by URL in Production - https://developer.akamai.com/api/purge/ccu/resources.html#postinvalidateurl
-$java -jar OpenAPIClient.jar /home/user1/mytokens.txt POST "/ccu/v3/invalidate/url/production" /home/user1/body.json /home/user1/headers.json
+$java -jar OpenAPIClient.jar /home/user1/mytokens.txt POST "/ccu/v3/invalidate/url/production" /home/user1/headers.json /home/user1/body.json
 <br>
 <br>
 any feedback or issue, feel free to email esenopra@akamai.com with subject "OpenCLIClient - Feedback"
