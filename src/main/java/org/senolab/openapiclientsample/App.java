@@ -44,8 +44,8 @@ public class App {
                             if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-")) {
                                 OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2]);
                                 apiCallService.execute();
-                            } else if (args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
-                                OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3]);
+                            } else {
+                                OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3], args[4]);
                                 apiCallService.execute();
                             }
                             System.out.println("");
@@ -56,7 +56,7 @@ public class App {
 
 
             } else {
-                System.out.println("OpenAPIClient v1.2.0 \n\n"
+                System.out.println("OpenAPIClient v1.2.5 \n\n"
                         + "This CLI takes 3 - 6 arguments separated by a single space depends on the API call and options that you require:  \n"
                         + "args[0] is location of .edgerc file. This file contain Akamai API client credentials (client token, \n"
                         + "access token, secret, host, and max body size) which necessary for EdgeGrid lib \n"
