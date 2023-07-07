@@ -12,10 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.senolab.openapiclientsample.edgercutil.Edgerc;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.nio.file.Files;
@@ -32,6 +29,7 @@ public class OpenAPICallServiceJSONOnly {
     private ClientCredential credential;
     private HttpRequest request;
     private HttpResponse response;
+    private boolean hasContentDisposition = false;
 
     public OpenAPICallServiceJSONOnly(String edgerc, String httpMethod, String httpPath) throws IOException {
         apiClientInfo = Edgerc.extractTokens(edgerc);
@@ -103,8 +101,13 @@ public class OpenAPICallServiceJSONOnly {
         response = request.execute();
 
         //Print HTTP response code + response headers
+        for(String key : response.getHeaders().keySet()) {
+            if (key.equalsIgnoreCase("content-disposition")) {
+                hasContentDisposition = true;
+            }
+        }
         //Extract the HTTP Response code and response
-        if(response.getContent() != null) {
+        if(response.getContent() != null && !hasContentDisposition) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getContent(), "UTF-8"));
             String json = reader.readLine();
             while (json != null) {
@@ -112,6 +115,14 @@ public class OpenAPICallServiceJSONOnly {
                 json = reader.readLine();
             }
             reader.close();
+        } else if(response.getContent() != null && hasContentDisposition) {
+            String contentDisposition = response.getHeaders().get("content-disposition").toString();
+            String fileName = contentDisposition.replaceAll("\\[", "").replaceAll("\\]", "")
+                    .split("=")[1];
+            OutputStream outputStream = new FileOutputStream(fileName);
+            response.download(outputStream);
+            outputStream.close();
+            System.out.println("HTTP Response Body: downloaded to file " + fileName);
         }
     }
 

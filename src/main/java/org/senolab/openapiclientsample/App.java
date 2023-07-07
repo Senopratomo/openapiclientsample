@@ -56,17 +56,17 @@ public class App {
 
 
             } else {
-                System.out.println("OpenAPIClient v1.2.5 \n\n"
+                System.out.println("OpenAPIClient v1.3.5 \n\n"
                         + "This CLI takes 3 - 6 arguments separated by a single space depends on the API call and options that you require:  \n"
                         + "args[0] is location of .edgerc file. This file contain Akamai API client credentials (client token, \n"
-                        + "access token, secret, host, and max body size) which necessary for EdgeGrid lib \n"
+                        + "access token, secret, host) which necessary for EdgeGrid lib \n"
                         + "sample: \n"
                         + "[default] \n"
                         + "host = https://akab-xxxxx.luna.akamaiapis.net \n"
                         + "client_token = akab-xxxxx \n"
                         + "client_secret = xxxxx \n"
                         + "access_token = xxxx \n"
-                        + "max-body = 131072 \n"
+                        + "\n"
                         + "args[1] is HTTP method \n"
                         + "args[2] is path to endpoint enclosed in double quotes (eg: \"/api/v2/somepath?q1=1\") \n"
                         + "args[3] is a json file containing list of HTTP headers that you want to pass on to the API call in JSON format. If there is no extra header being added, put \"-\" \n"
@@ -94,7 +94,7 @@ public class App {
                         + "$java -jar OpenAPIClient.jar /home/user1/mytokens.txt GET \"/reporting-api/v1/reports/bytes-by-ip/versions/1\" \"-\" \"-\" \"json-only\"  \n"
                         + "\n"
                         + "Scenario #4: Perform 10 times PAPI 'list contracts' API call with 5 seconds wait between each call  - https://developers.akamai.com/api/core_features/property_manager/v1.html#getcontracts \n"
-                        + "$java -jar OpenAPIClient.jar /home/user1/mytokens.txt GET \"/papi/v1/contracts\" \"-\" \"-\" \"-\" \"10,5\"\n\n"
+                        + "$java -jar OpenAPIClient.jar /home/user1/mytokens.txt GET \"/papi/v1/contracts\" \"-\" \"-\" \"10,5\"\n\n"
                         + "any feedback or issue, feel free to email esenopra@akamai.com with subject \"OpenCLIClient - Feedback\" \n"
                         + " ");
             }

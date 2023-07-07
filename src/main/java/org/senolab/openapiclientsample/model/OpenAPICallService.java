@@ -29,6 +29,7 @@ public class OpenAPICallService {
     private ClientCredential credential;
     private HttpRequest request;
     private HttpResponse response;
+    private boolean hasContentDisposition = false;
 
     public OpenAPICallService(String edgerc, String httpMethod, String httpPath) throws IOException {
         System.out.println("Reading your token credentials from "+edgerc+" ....");
@@ -106,16 +107,25 @@ public class OpenAPICallService {
         //Sign request and execute
         GoogleHttpClientEdgeGridRequestSigner requestSigner = new GoogleHttpClientEdgeGridRequestSigner(credential);
         requestSigner.sign(request);
-        System.out.println("HTTP Request headers: \n"+request.getHeaders());
+        System.out.println("HTTP Request headers: ");
+        for(String key : request.getHeaders().keySet()) {
+            System.out.println(key + ": " + request.getHeaders().get(key));
+        }
         start = System.currentTimeMillis();
         System.out.println("Executing the HTTP request...");
         response = request.execute();
 
         //Print HTTP response code + response headers
         System.out.println("HTTP Response code: "+response.getStatusCode());
-        System.out.println("HTTP Response headers: \n"+response.getHeaders());
+        System.out.println("HTTP Response headers: ");
+        for(String key : response.getHeaders().keySet()) {
+            System.out.println(key + ": " + response.getHeaders().get(key));
+            if (key.equalsIgnoreCase("content-disposition")) {
+                hasContentDisposition = true;
+            }
+        }
         //Extract the HTTP Response code and response
-        if(response.getContent() != null) {
+        if(response.getContent() != null && !hasContentDisposition) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getContent(), "UTF-8"));
             String json = reader.readLine();
             System.out.println("HTTP Response Body: ");
@@ -124,6 +134,15 @@ public class OpenAPICallService {
                 json = reader.readLine();
             }
             reader.close();
+        } else if(response.getContent() != null && hasContentDisposition) {
+            String contentDisposition = response.getHeaders().get("content-disposition").toString();
+            String fileName = contentDisposition.replaceAll("\\[", "").replaceAll("\\]","")
+                    .split("=")[1];
+            OutputStream outputStream = new FileOutputStream(fileName);
+            response.download(outputStream);
+            outputStream.close();
+            System.out.println("HTTP Response Body: downloaded to file "+fileName);
+
         }
 
         end = System.currentTimeMillis();
