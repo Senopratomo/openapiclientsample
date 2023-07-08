@@ -24,13 +24,13 @@ public class App {
             } else if (args.length == 6) {
                 switch(args[5]) {
                     case "json-only":
-                        if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
+                        if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-")) {
                             OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2]);
                             apiCallService.execute();
-                        } else if (args[4].equalsIgnoreCase("-") && args[5].equalsIgnoreCase("json-only")) {
+                        } else if (args[4].equalsIgnoreCase("-"))  {
                             OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3]);
                             apiCallService.execute();
-                        } else if (args[5].equalsIgnoreCase("json-only")) {
+                        } else {
                             OpenAPICallServiceJSONOnly apiCallService = new OpenAPICallServiceJSONOnly(args[0], args[1], args[2], args[3], args[4]);
                             apiCallService.execute();
                         }
@@ -41,14 +41,14 @@ public class App {
                         int sleepPerInterval = Integer.parseInt(repetitionInterval[1]) * 1000;
                         for(int i=0; i < reps; i++) {
                             System.out.println(args[1]+" "+args[2]);
+                            OpenAPICallService apiCallService;
                             if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-")) {
-                                OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2]);
-                                apiCallService.execute();
+                                apiCallService = new OpenAPICallService(args[0], args[1], args[2]);
                             } else {
-                                OpenAPICallService apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3], args[4]);
-                                apiCallService.execute();
+                                apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3], args[4]);
                             }
-                            System.out.println("");
+                            apiCallService.execute();
+                            System.out.println();
                             Thread.sleep(sleepPerInterval);
                         }
                         break;
@@ -56,7 +56,7 @@ public class App {
 
 
             } else {
-                System.out.println("OpenAPIClient v1.3.5 \n\n"
+                System.out.println("OpenAPIClient v1.3.7 \n\n"
                         + "This CLI takes 3 - 6 arguments separated by a single space depends on the API call and options that you require:  \n"
                         + "args[0] is location of .edgerc file. This file contain Akamai API client credentials (client token, \n"
                         + "access token, secret, host) which necessary for EdgeGrid lib \n"
@@ -100,7 +100,10 @@ public class App {
             }
         } catch (HttpResponseException hre) {
             System.out.println("HTTP Response code: "+hre.getStatusCode());
-            System.out.println("HTTP Response headers: \n"+hre.getHeaders());
+            System.out.println("HTTP Response headers: ");
+            for(String key : hre.getHeaders().keySet()) {
+                System.out.println(key + ": " + hre.getHeaders().get(key));
+            }
             System.out.println("HTTP Response body: \n"+hre.getContent());
         } catch (ParseException e) {
             System.out.println("Unable to parse the file containing the additional headers and/or the file containing the JSON body");
