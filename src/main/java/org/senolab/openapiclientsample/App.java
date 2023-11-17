@@ -40,6 +40,7 @@ public class App {
                         int reps = Integer.parseInt(repetitionInterval[0]);
                         int sleepPerInterval = Integer.parseInt(repetitionInterval[1]) * 1000;
                         for(int i=0; i < reps; i++) {
+
                             System.out.println(args[1]+" "+args[2]);
                             OpenAPICallService apiCallService;
                             if (args[3].equalsIgnoreCase("-") && args[4].equalsIgnoreCase("-")) {
@@ -47,7 +48,16 @@ public class App {
                             } else {
                                 apiCallService = new OpenAPICallService(args[0], args[1], args[2], args[3], args[4]);
                             }
-                            apiCallService.execute();
+                            try {
+                                apiCallService.execute();
+                            } catch (HttpResponseException hrex) {
+                                System.out.println("HTTP Response code: "+hrex.getStatusCode());
+                                System.out.println("HTTP Response headers: ");
+                                for(String key : hrex.getHeaders().keySet()) {
+                                    System.out.println(key + ": " + hrex.getHeaders().get(key));
+                                }
+                                System.out.println("HTTP Response body: \n"+hrex.getContent());
+                            }
                             System.out.println();
                             Thread.sleep(sleepPerInterval);
                         }
@@ -56,7 +66,7 @@ public class App {
 
 
             } else {
-                System.out.println("OpenAPIClient v1.3.7 \n\n"
+                System.out.println("OpenAPIClient v1.3.8 \n\n"
                         + "This CLI takes 3 - 6 arguments separated by a single space depends on the API call and options that you require:  \n"
                         + "args[0] is location of .edgerc file. This file contain Akamai API client credentials (client token, \n"
                         + "access token, secret, host) which necessary for EdgeGrid lib \n"

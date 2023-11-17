@@ -3,8 +3,9 @@
 <h3>Prerequisite</h3>
 <p>
     <ul>
-        <li>Java installed in the loca (note: I use JAVA 11 in this sample, but if you have different JAVA version locally, change the "properties" tag in pom.xml
+        <li>Java installed in the loca (note: I use JAVA 21 in this sample, but if you have different JAVA version locally, change the "properties" tag in pom.xml
         <li>Maven installed in local</li>
+        <li>if you use the .jar file directly, ensure JAVA 21 and above is installed on your machine</li>
     </ul>    
 </p>
 <h3>Setup</h3>
@@ -12,7 +13,7 @@
     <ul>
         <li>Clone this project</li>
         <li>Go to that root dir of the project</li>
-        <li>Run Maven install - $mvn clean install
+        <li>Run Maven install - $mvn clean install</li>
     </ul>
 </p>
 
